@@ -1,0 +1,85 @@
+---
+title: "FLR Tutorials - Session 6"
+subtitle: "Stock assessment methods in FLR"
+author: Iago MOSQUEIRA (WMR)
+date: "[FLR Project](https://flr-project.org)"
+output:
+  ioslides_presentation:
+    widescreen: TRUE
+---
+
+<style>
+  pre {
+    font-size: 15px;
+  }
+</style>
+
+```{r setup, echo=FALSE, result="hide"}
+library(knitr)
+library(ggplotFL)
+library(FLXSA)
+opts_chunk$set(echo=TRUE)
+```
+
+## Stock assessment
+
+<div class="centered">
+```{r, echo=FALSE, fig.height=7, fig.width=8, out.width="60%"}
+plot(ple4)
+```
+</div>
+
+## Methods available
+
+- **FLa4a**, Assessment for all. SCA using splines andb submodels.
+- **FLXSA**, eXtended Survivor Analysis. VPA + tuning.
+- **FLSAM**, Stock Assessment Model. SCA with random walks and mixed effects.
+- **AAP**, Aarts & Poos. SCA for sole and plaice, reconstructs discards.
+- **BBM**, Two-Stage Stock Assessment Model.
+- **mpb**, ASPIC and pella surplus production models in ADMB.
+
+### Other relevant packages
+- **ss3om**, Load and work with SS3 outputs.
+
+
+## Standard interface
+
+### Run
+
+```{r, eval=FALSE}
+fit  <- FLXSA(ple4, ple4.indices, FLXSA.control(shk.n=FALSE))
+```
+
+### Update (harvest, stock.n)
+
+```{r, eval=FALSE}
+run <- ple4 + fit
+```
+
+### Diagnostics, residuals
+
+```{r, eval=FALSE}
+diagnostics(fit)
+residuals(fit)
+```
+
+## a4a interface
+
+### Submodels
+
+```{r eval=FALSE}
+fmod <- ~ factor(age) + factor(year)
+srmod <- ~ factor(year)
+```
+
+### Run
+```{r}
+fit <- sca(stock = ple4, indices = indices, fmodel=fmod, srmodel=srmod)
+```
+
+### Update
+
+```{r, eval=FALSE}
+run <- ple4 + fit
+```
+

@@ -1,0 +1,215 @@
+---
+title: "FLR Tutorials - Session 2"
+subtitle: "Manipulating, summarizing and operating on FLR objects"
+author: Iago MOSQUEIRA (WMR)
+date: "[FLR Project](https://flr-project.org)"
+output:
+  ioslides_presentation:
+    widescreen: TRUE
+---
+
+<style>
+  pre {
+    font-size: 15px;
+  }
+</style>
+
+
+```{r setup, echo=FALSE, result="hide"}
+library(knitr)
+library(FLCore)
+library(ggplotFL)
+data(ple4)
+flq <- FLQuant(runif(9), dimnames=list(age=0:2, year=2020:2022), units="kg")
+opts_chunk$set(echo=TRUE)
+```
+
+## Quick review of FLQuant and FLStock
+
+```{r, echo=TRUE}
+FLQuant(runif(9), dimnames=list(age=0:2, year=2020:2022), units="last")
+```
+
+## Quick review of FLQuant and FLStock
+
+```{r, echo=FALSE}
+plot(ple4) + ggtitle("ple.27.420")
+```
+
+## Quick review of FLQuant and FLStock
+
+- `summary(ple4)`
+- `catch(ple4)`
+- `FLQuant()`
+- `ssb(ple4)`
+- `dimnames(stock.n(ple4))`
+- `units`
+- `catch(ple4)[, 1:20]`
+- `as.data.frame(ple4)`
+
+## Subsetting
+
+- Like R's `array` but
+  - No need to write all the commas
+  - By default `drop = FALSE`
+
+```{r}
+dim(flq[, 2:3])
+dim(flq[, 2:3, drop=TRUE])
+```
+
+## Subsetting
+
+- Like R's `array` but
+  - No need to write all the commas
+  - By default `drop = FALSE`
+- By position, `flq[1,]` or name, `flq['0',]`
+
+<div class="columns-2">
+```{r}
+flq[1, 2:3]
+```
+
+```{r}
+flq["1", 2:3]
+```
+</div>
+
+## Subsetting
+
+- Like R's `array` but
+  - No need to write all the commas
+  - By default `drop = FALSE`
+- By position, `flq[1,]` or name, `flq['0',]`
+- `window()` for year, also expands
+
+```{r}
+window(flq, end=2024)
+```
+
+## Subsetting
+
+- Like R's `array` but
+  - No need to write all the commas
+  - By default `drop = FALSE`
+- By position, `flq[1,]` or name, `flq['0',]`
+- `window()` for year, also expands
+- `expand` works for all dimensions
+
+```{r}
+dimnames(expand(flq, age=0:4))$age
+```
+
+## Appending
+
+- `append` to join along year
+- One `bind` method for each dimension
+  - `qbind`
+  - `ybind`
+  - `ubind`
+  - `sbind`
+  - `abind`
+  - `ibind`
+
+## Arithmetic
+
+- As R's `array` but `iter` need not match (1 vs. N)
+
+```{r}
+fla <- FLQuant(runif(90), dim=c(3,3,1,1,1,10))
+flb <- FLQuant(runif(9), dim=c(3,3,1,1,1,1))
+
+fla * flb
+```
+
+## Summaries along dimensions
+
+- `yearSums`, `yearMeans`, `yearVars`
+- `iterMedians`, 'iterCVs'
+- Or use `apply(flq, dims, function, ...)`
+
+```{r}
+apply(fla, c(2:6), function(x) sum(x <= 0.5))
+```
+
+## Dealing with iterations
+
+- `plot()` shows median and quantiles (80%, 33%)
+
+```{r}
+flqi <- rnorm(200, catch(ple4), 20000)
+plot(flqi)
+```
+
+## Dealing with iterations
+
+- `propagate` to move from 1 to N
+- `combine` to merge along `iter`
+- RNG functions can take FLQuant inputs
+
+```{r}
+rnorm(200, flb, 5)
+```
+
+## FLStock metrics
+
+- Spawning stock biomass, `ssb()`
+- Recruitment, `rec()`
+- Total spawning biomass, `tsb()`,
+- Vulnerable biomass, `vb()`
+- $\bar{F}$, `fbar()`
+- $F_{apex}$, `fapex()`
+- Surplus production, `sp()`
+
+## Applying functions
+
+- `apply` on FLQuant, as in array
+- `qapply` along all FLQuant slots
+
+```{r}
+qapply(ple4, function(x)  sum(x == 0))
+```
+
+## Applying functions
+
+- `apply` on FLQuant, as in array
+- `qapply` along all FLQuant slots
+- `lapply` for lists of FLR objects
+
+```{r}
+flqs <- FLQuants(A=fla, B=flb)
+lapply(flqs, dim)
+```
+
+## Applying functions
+
+- `apply` on FLQuant, as in array
+- `qapply` along all FLQuant slots
+- `lapply` for lists of FLR objects
+- `Reduce` to combine list elements
+
+```{r}
+Reduce("+", flqs)
+```
+
+## Applying functions
+
+- `apply` on FLQuant, as in array
+- `qapply` along all FLQuant slots
+- `lapply` for lists of FLR objects
+- `Reduce` to combine list elements
+- `Map` to apply along two or more lists
+
+## FL lists
+
+- Each class has its plural, `FLQuant` -- `FLQuants`
+- Any number of elements
+- All elements of the same class
+- FLQuants, FLStocks, FLIndices
+
+## FLIndices, `ple4.indices`
+
+```{r}
+data(ple4.indices)
+plot(ple4.indices)
+```

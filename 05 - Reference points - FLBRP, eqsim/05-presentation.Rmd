@@ -1,0 +1,43 @@
+---
+title: "FLR Tutorials - Session 5"
+subtitle: "Reference points - FLBRP, eqsim"
+author: Iago MOSQUEIRA (WMR)
+date: "[FLR Project](https://flr-project.org)"
+output:
+  ioslides_presentation:
+    widescreen: TRUE
+---
+
+<style>
+  pre {
+    font-size: 15px;
+  }
+</style>
+
+```{r setup, echo=FALSE, result="hide"}
+library(knitr)
+library(FLBRP)
+library(ggplotFL)
+data(ple4)
+data(ple4brp)
+opts_chunk$set(echo=TRUE)
+```
+
+## Biological reference points
+
+<div class="centered">
+```{r, echo=FALSE, fig.height=7, fig.width=8, out.width="60%"}
+plot(ple4brp, obs=TRUE)
+```
+</div>
+
+## FLBRP
+
+- An FLStock updated by an stock assessment
+- A stock-recruitment relationship
+- *FLBRP* class
+  - Observed time series (catch, rec, ssb, ...)
+  - Equilibrium at-age vectors (wt, selex, m ,mat)
+  - Stock-recruitment model and params
+- `FLBRP(ple4, sr=srr)`
+- Fit using `brp()`

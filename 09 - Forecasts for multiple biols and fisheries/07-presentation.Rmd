@@ -1,0 +1,27 @@
+---
+title: "FLR Tutorials - Session 4"
+subtitle: "Short Term Forecasting with FLasher"
+author: Iago MOSQUEIRA (WMR)
+date: "[FLR Project](https://flr-project.org)"
+output:
+  ioslides_presentation:
+    widescreen: TRUE
+---
+
+# 
+
+<style>
+  pre {
+    font-size: 15px;
+  }
+</style>
+
+
+```{r setup, echo=FALSE, result="hide"}
+library(knitr)
+library(FLasher)
+library(ggplotFL)
+data(ple4)
+opts_chunk$set(echo=TRUE)
+```
+
